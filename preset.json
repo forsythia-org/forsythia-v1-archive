@@ -1,0 +1,11 @@
+[
+    { "name": "search engine", "url": "duckduckgo.com" },
+    { "name": "gagg", "url": "gagg.vercel.app" },
+    { "name": "uwu systems", "url": "uwusystem.github.io" },
+    { "name": "reddit (TODO: make this work)", "url": "reddit.com" },
+    { "name": "pirated minecraft", "url": "eaglercraft.com"},
+    { "name": "rammerhead (browser in a browser)", "url": "hammerhead.iot64.de"},
+    { "name": "discord", "url": "discord.com"},
+    { "name": "revolt (discord but better)", "url": "revolt.chat"}
+  ]
+  

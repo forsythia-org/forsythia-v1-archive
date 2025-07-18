@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>forsythia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Quicksand', sans-serif;
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-weight: 600;
+      margin-bottom: 1em;
+    }
+
+    .input-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75em;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 1em;
+      background-color: #2c2c2c;
+      color: #fff;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      margin-bottom: 1em;
+      font-size: 0.95em;
+    }
+
+    button {
+      padding: 0.7em 1.5em;
+      font-size: 1em;
+      background-color: #3c3c3c;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+
+    .presets {
+      margin-top: 2em;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .presets h2 {
+      font-size: 1em;
+      margin-bottom: 0.5em;
+      font-weight: 600;
+    }
+
+    .preset-link {
+      display: block;
+      padding: 0.4em;
+      margin-bottom: 0.3em;
+      background-color: #2a2a2a;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .preset-link:hover {
+      background-color: #3d3d3d;
+    }
+  </style>
+</head>
+<body>
+  <img src="forsythia.png" alt="forsythia logo" style="display:block; margin: 2em auto 1em auto; max-width: 120px; border-radius: 16px;" />
+
+  <h1>forsythia</h1>
+
+  <div class="input-wrapper">
+    <input type="text" id="urlInput" placeholder="Enter a URL..." />
+    <div class="checkbox-row">
+      <input type="checkbox" id="newTab" />
+      <label for="newTab">Open in new tab</label>
+    </div>
+    <button onclick="go()">Go</button>
+  </div>
+
+  <div class="presets">
+    <h2>quick links</h2>
+    <div id="presetLinks"></div>
+  </div>
+
+  <script>
+    alert("You are using Forsythia 1. It doesn't have many recent features of Forsythia 2.");
+
+    function normalizeUrl(url) {
+      url = url.trim();
+      url = url.replace(/\/+/, '/');
+      if (!url.startsWith('http')) {
+        url = "https://" + url;
+      }
+      if (!url.match(/\/($|\?|#)/)) {
+        url += "/";
+      }
+      return url;
+    }
+
+    function go(urlFromPreset = null) {
+      const input = document.getElementById("urlInput");
+      const rawUrl = urlFromPreset || input.value.trim();
+      const openNewTab = document.getElementById("newTab").checked;
+
+      if (!rawUrl) {
+        alert("Please enter a URL.");
+        return;
+      }
+
+      const finalUrl = normalizeUrl(rawUrl);
+      const base64 = btoa(finalUrl);
+      const target = `https://yandhi.herokuapp.com/trgr.html?url=${base64}`;
+
+      if (openNewTab) {
+        window.open(target, "_blank");
+      } else {
+        window.location.href = target;
+      }
+    }
+
+    fetch('presets.json')
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('presetLinks');
+        data.forEach(preset => {
+          const div = document.createElement('div');
+          div.className = 'preset-link';
+          div.textContent = preset.name;
+          div.onclick = () => {
+            document.getElementById('urlInput').value = preset.url;
+            go(preset.url);
+          };
+          container.appendChild(div);
+        });
+      })
+      .catch(() => {
+        document.getElementById('presetLinks').innerHTML = 'could not load quick links';
+      });
+  </script>
+</body>
+</html>
